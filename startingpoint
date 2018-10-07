@@ -1,0 +1,108 @@
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class StartingPoint extends Applet implements Runnable, KeyListener {
+	
+	
+	private Image i;
+	private Graphics DoubleG;
+	Ball b;
+	Platform p;
+	
+	@Override
+	public void init() {
+		setSize(800, 600);
+		addKeyListener(this);
+		
+	}
+	
+	@Override
+	public void start() {
+		 b = new Ball();
+		 p = new Platform();
+		Thread thread = new Thread(this);
+		thread.start();
+		
+	}
+	@Override
+	public void run() {
+		//thread information
+		while (true)
+		{
+			b.update(this);
+			p.update(this, b);
+			repaint();
+			try {
+				Thread.sleep(17);                 //setting fps 60fps=17ms
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();                 //fordebugging
+			}  
+		}
+	}
+	
+	@Override
+	public void stop() {
+		
+	}
+	
+	@Override
+	public void destroy() {
+	
+	}
+	
+	@Override
+	public void update(Graphics g) {
+		if(i == null) {
+			i=createImage(this.getSize().width, this.getSize().height); //800,600
+			DoubleG = i.getGraphics();
+		}
+		
+		DoubleG.setColor(getBackground());     //backgroundcolor
+	    DoubleG.fillRect(0,0,this.getSize().width,this.getSize().height);
+	    
+	    DoubleG.setColor(getForeground());
+	    paint(DoubleG);
+	    
+	    g.drawImage(i, 0, 0, this);
+	}
+	@Override
+	public void paint(Graphics g) {
+		b.paint(g);
+		p.paint(g);
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		switch(e.getKeyCode())
+		{
+		case KeyEvent.VK_LEFT:
+			b.moveLeft();
+			break;
+		case KeyEvent.VK_RIGHT:
+			b.moveRight();
+			break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+
+}
